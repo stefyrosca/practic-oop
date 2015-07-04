@@ -99,3 +99,10 @@
 5 abcd
 2 sss
 1 aaaa
+5 abcd
+4 ccc
+3 aaa
+3 aaad
+4 acm
+1 abbbb
+4 ccc

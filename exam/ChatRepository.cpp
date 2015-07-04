@@ -1,7 +1,7 @@
 #include "ChatRepository.h"
 #include <fstream>
 #include <algorithm>
-
+#include <thread>
 
 ChatRepository::ChatRepository()
 {
@@ -12,14 +12,17 @@ ChatRepository::~ChatRepository()
 {
 }
 void ChatRepository::_writeAllInFile() {
+	write_mtx.lock();
 	std::fstream out(messageFile, std::ios::out | std::ios::trunc);
 	for (int i = 0; i < messages.size(); i++) {
 		out << messages[i];
 	}
 	out.close();
+	write_mtx.unlock();
 }
 
 void ChatRepository::_loadFromFile() {
+	load_mtx.lock();
 	users.clear();
 	std::ifstream in(userFile);
 	while (!in.eof()) {
@@ -28,12 +31,15 @@ void ChatRepository::_loadFromFile() {
 		users.push_back(e);
 	}
 	in.close();
+	load_mtx.unlock();
 }
 
 void ChatRepository::_addToFile(Message e) {
+	write_mtx.lock();
 	std::ofstream out(messageFile, std::ios::app);
 	out << e;
 	out.close();
+	write_mtx.unlock();
 }
 
 User ChatRepository::findByID(int id) {
